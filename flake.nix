@@ -21,10 +21,8 @@
                 name = "my-shell";
                 entry = "app.ts";
 
-                # additional libraries and executables to add to gjs' runtime
-                extraPackages = [
-                    # ags.packages.${system}.battery
-                    # pkgs.fzf
+                extraPackages = with inputs.ags.packages.${system}; [
+                    hyprland
                 ];
             };
         };
@@ -32,15 +30,7 @@
         devShells.${system} = {
             default = pkgs.mkShell {
                 buildInputs = [
-                    # includes all Astal libraries
-                    # ags.packages.${system}.agsFull
-
-                    # includes astal3 astal4 astal-io by default
-                    (inputs.ags.packages.${system}.default.overrideAttrs {
-                        extraPackages = [
-                            # cherry pick packages
-                        ];
-                    })
+                    inputs.ags.packages.${system}.agsFull
                 ];
             };
         };
