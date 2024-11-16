@@ -22,7 +22,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         >
             <centerbox>
                 <box halign={Gtk.Align.START}>
-                    <Workspaces />
+                    <Workspaces gdkmonitor={gdkmonitor} />
                 </box>
                 <Clock />
                 <box halign={Gtk.Align.END}>
