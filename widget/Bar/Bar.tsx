@@ -1,11 +1,8 @@
 import { App, Astal, Gtk, Gdk } from "astal/gtk3"
-import { Variable } from "astal"
 import Workspaces from "./Workspaces"
 import SystemTray from "./SystemTray"
 import Sound from "./Sound"
 import Clock from "./Clock"
-
-const time = Variable("").poll(1000, "date")
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
     return (
@@ -24,7 +21,9 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
                 <box halign={Gtk.Align.START}>
                     <Workspaces gdkmonitor={gdkmonitor} />
                 </box>
-                <Clock />
+                <box halign={Gtk.Align.CENTER}>
+                    <Clock />
+                </box>
                 <box halign={Gtk.Align.END}>
                     <SystemTray />
                     <Sound />

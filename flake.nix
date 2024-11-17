@@ -14,17 +14,16 @@
         system = "x86_64-linux";
         pkgs = inputs.nixpkgs.legacyPackages.${system};
     in {
-        packages.${system} = {
-            default = inputs.ags.lib.bundle {
-                inherit pkgs;
-                src = ./.;
-                name = "my-shell";
-                entry = "app.ts";
+        packages.${system}.default = inputs.ags.lib.bundle {
+            inherit pkgs;
+            src = ./.;
+            name = "my-shell";
+            entry = "app.ts";
 
-                extraPackages = with inputs.ags.packages.${system}; [
-                    hyprland
-                ];
-            };
+            extraPackages = with inputs.ags.packages.${system}; [
+                hyprland
+                tray
+            ];
         };
 
         devShells.${system} = {
