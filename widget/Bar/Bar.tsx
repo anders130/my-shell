@@ -4,7 +4,7 @@ import SystemTray from "./SystemTray"
 import Sound from "./Sound"
 import Clock from "./Clock"
 
-export default function Bar(gdkmonitor: Gdk.Monitor) {
+export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
     return (
         <window
             className="Bar"
@@ -19,7 +19,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         >
             <centerbox>
                 <box halign={Gtk.Align.START}>
-                    <Workspaces gdkmonitor={gdkmonitor} />
+                    <Workspaces monitorId={monitorId} />
                 </box>
                 <box halign={Gtk.Align.CENTER}>
                     <Clock />

@@ -1,17 +1,17 @@
 import { bind } from "astal"
-import { Gdk, Gtk } from "astal/gtk3"
+import { Gtk } from "astal/gtk3"
 import Hyprland from "gi://AstalHyprland"
 
 const hyprland = Hyprland.get_default()
 
 interface Props {
-    gdkmonitor: Gdk.Monitor
+    monitorId: number
 }
 
-export default function Workspaces({ gdkmonitor }: Props) {
+export default function Workspaces({ monitorId }: Props) {
     const workspaces = bind(hyprland, "workspaces").as((ws) =>
         ws
-            .filter((workspace) => workspace.monitor.model === gdkmonitor.model)
+            .filter((workspace) => workspace.monitor.id === monitorId)
             .sort((a, b) => a.id - b.id)
             .map((workspace) => (
                 <button
