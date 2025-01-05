@@ -9,14 +9,6 @@
         // "checkJs": true,
         // "allowJs": true,
         "jsx": "react-jsx",
-        "jsxImportSource": "/nix/store/qvzsdarfq7gwbydap3xxr46jzal9p6kd-astal-gjs/share/astal/gjs/gtk3",
-        "paths": {
-            "astal": [
-                "/nix/store/qvzsdarfq7gwbydap3xxr46jzal9p6kd-astal-gjs/share/astal/gjs"
-            ],
-            "astal/*": [
-                "/nix/store/qvzsdarfq7gwbydap3xxr46jzal9p6kd-astal-gjs/share/astal/gjs/*"
-            ]
-        },
+        "jsxImportSource": "astal/gtk3",
     }
 }
