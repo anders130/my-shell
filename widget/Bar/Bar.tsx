@@ -1,6 +1,6 @@
 import { App, Astal, Gtk, Gdk } from "astal/gtk3"
 import Workspaces from "./Workspaces"
-import SystemTray from "./SystemTray"
+import Tray from "./Tray"
 import Sound from "./Sound"
 import Clock from "./Clock"
 
@@ -25,7 +25,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
                     <Clock />
                 </box>
                 <box halign={Gtk.Align.END}>
-                    <SystemTray />
+                    <Tray />
                     <Sound />
                 </box>
             </centerbox>
