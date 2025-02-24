@@ -26,12 +26,10 @@
             ];
         };
 
-        devShells.${system} = {
-            default = pkgs.mkShell {
-                buildInputs = [
-                    inputs.ags.packages.${system}.agsFull
-                ];
-            };
+        devShells.${system}.default = pkgs.mkShell {
+            buildInputs = [
+                inputs.ags.packages.${system}.agsFull
+            ];
         };
     };
 }
