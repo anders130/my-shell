@@ -37,11 +37,7 @@ export default function Workspaces({ monitorId }: Props) {
     )
 
     return (
-        <box
-            orientation={Gtk.Orientation.HORIZONTAL}
-            spacing={5}
-            halign={Gtk.Align.CENTER}
-        >
+        <box orientation={Gtk.Orientation.HORIZONTAL} halign={Gtk.Align.CENTER}>
             {workspaces}
         </box>
     )

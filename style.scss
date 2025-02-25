@@ -6,16 +6,15 @@ window.Bar {
     background: transparent;
     color: $fg-color;
     font-weight: bold;
+    font-size: 14px;
 
     > centerbox {
-        background: $bg-color;
-        border-radius: 10px;
-        margin: 8px;
+        background: rgba(36, 39, 58, 0.5);
     }
 
     button {
-        border-radius: 8px;
-        margin: 2px;
+        border-radius: 0;
+        background: transparent;
     }
 
     .app-count {
