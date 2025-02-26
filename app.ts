@@ -1,6 +1,6 @@
 import { App } from "astal/gtk3"
 import style from "./style.scss"
-import Bar from "./widget/Bar/Bar"
+import Bar from "./widget/Bar"
 
 const monitors = []
 App.start({
