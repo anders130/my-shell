@@ -22,14 +22,20 @@ export default function Clients({ workspaceId }: Props) {
                 .reduce(
                     (acc, client) => {
                         const key = client.class || client.title
-                        acc[key] = (acc[key] || 0) + 1
+                        if (!acc[key]) {
+                            acc[key] = { count: 0, client }
+                        }
+                        acc[key].count += 1
                         return acc
                     },
-                    {} as Record<string, number>,
+                    {} as Record<
+                        string,
+                        { count: number; client: Hyprland.Client }
+                    >,
                 ),
-        ).map(([app, count]) => (
+        ).map(([_, { count, client }]) => (
             <box orientation={Gtk.Orientation.HORIZONTAL} spacing={2}>
-                <icon icon={getIcons(app)} />
+                <icon icon={getIcons(client)} />
                 {count > 1 && <label className="app-count">{count}</label>}
             </box>
         )),
@@ -42,8 +48,10 @@ export default function Clients({ workspaceId }: Props) {
     )
 }
 
-function getIcons(appName: string) {
-    return (
-        apps.fuzzy_query(appName)?.at(0)?.iconName || "application-default-icon"
-    )
+function getIcons(client: Hyprland.Client): string {
+    const likelyApps = apps.fuzzy_query(client.class)
+    if (likelyApps.length === 0) {
+        likelyApps.push(...apps.fuzzy_query(client.title))
+    }
+    return likelyApps[0].iconName
 }
