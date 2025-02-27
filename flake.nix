@@ -30,9 +30,10 @@
             extraPackages =
                 deps
                 ++ (with agsPkgs; [
+                    apps
+                    battery
                     hyprland
                     tray
-                    apps
                 ]);
         };
 

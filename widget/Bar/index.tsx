@@ -3,6 +3,7 @@ import Workspaces from "./Workspaces"
 import Tray from "./Tray"
 import Sound from "./Sound"
 import Clock from "./Clock"
+import Battery from "./Battery"
 
 export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
     return (
@@ -27,6 +28,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
                 <box halign={Gtk.Align.END}>
                     <Tray />
                     <Sound />
+                    <Battery />
                 </box>
             </centerbox>
         </window>
