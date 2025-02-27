@@ -4,18 +4,17 @@ import Tray from "./Tray"
 import Sound from "./Sound"
 import Clock from "./Clock"
 import Battery from "./Battery"
+import Wifi from "./Wifi"
 
 export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
+    const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
+
     return (
         <window
             className="Bar"
             gdkmonitor={gdkmonitor}
             exclusivity={Astal.Exclusivity.EXCLUSIVE}
-            anchor={
-                Astal.WindowAnchor.TOP |
-                Astal.WindowAnchor.LEFT |
-                Astal.WindowAnchor.RIGHT
-            }
+            anchor={TOP | LEFT | RIGHT}
             application={App}
         >
             <centerbox>
@@ -28,7 +27,10 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
                 <box halign={Gtk.Align.END}>
                     <Tray />
                     <Sound />
-                    <Battery />
+                    <box spacing={10} className="indicators">
+                        <Wifi />
+                        <Battery />
+                    </box>
                 </box>
             </centerbox>
         </window>

@@ -8,7 +8,7 @@ window.Bar {
     font-weight: bold;
     font-size: 14px;
 
-    > centerbox {
+    >centerbox {
         background: rgba(36, 39, 58, 0.5);
     }
 
@@ -24,5 +24,9 @@ window.Bar {
         min-width: 14px;
         border-radius: 50%;
         background-color: transparent;
+    }
+
+    .indicators {
+        padding: 0 8px;
     }
 }

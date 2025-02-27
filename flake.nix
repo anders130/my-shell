@@ -33,6 +33,7 @@
                     apps
                     battery
                     hyprland
+                    network
                     tray
                 ]);
         };
