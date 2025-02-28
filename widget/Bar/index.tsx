@@ -27,12 +27,23 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
                 <box halign={Gtk.Align.END}>
                     <Tray />
                     <Sound />
-                    <box spacing={10} className="indicators">
-                        <Wifi />
-                        <Battery />
-                    </box>
+                    <Indicators />
                 </box>
             </centerbox>
         </window>
+    )
+}
+
+function Indicators() {
+    const wifi = Wifi()
+    const battery = Battery()
+
+    const isVisible = wifi.visible || battery.visible
+
+    return (
+        <box spacing={10} className="indicators" visible={isVisible}>
+            {wifi}
+            {battery}
+        </box>
     )
 }
