@@ -29,7 +29,10 @@ export default function Sound() {
     updateActivePort()
 
     return (
-        <button onClicked={togglePort}>
+        <button
+            onClicked={togglePort}
+            visible={bind(activePort).as((p) => p !== "Unknown")}
+        >
             <icon
                 icon={bind(activePort).as((p) =>
                     p.includes("headphones")
