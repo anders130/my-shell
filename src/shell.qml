@@ -1,11 +1,6 @@
-import "modules"
-import "modules/drawers"
-import "modules/background"
+// shell.qml
 import Quickshell
 
-ShellRoot {
-    Background {}
-    Drawers {}
-
-    Shortcuts {}
+Scope {
+    Bar {}
 }

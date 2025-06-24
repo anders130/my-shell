@@ -12,53 +12,14 @@
     outputs = inputs: let
         system = "x86_64-linux";
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        inherit (pkgs) lib;
+        quickshell = inputs.quickshell.packages.${system}.default;
+        inherit (pkgs) mkShell;
     in {
-        packages.${system} = import ./pkgs {
-            inherit pkgs lib inputs;
-        };
-        devShells.${system}.default = pkgs.mkShell {
-            buildInputs = with inputs.self.packages.${system};
-                [
-                    quickshell-wrapped
-                    # caelestia-scripts
-                    caelestia-wrapped
-                ]
-                ++ (with pkgs; [
-                    # Qt dependencies
-                    qt6.qt5compat
-                    qt6.qtdeclarative
-
-                    # Runtime dependencies
-                    hyprpaper
-                    imagemagick
-                    wl-clipboard
-                    fuzzel
-                    socat
-                    foot
-                    jq
-                    python3
-                    python3Packages.materialyoucolor
-                    grim
-                    wayfreeze
-                    wl-screenrec
-                    # inputs.astal.packages.${pkgs.system}.default
-
-                    # Additional dependencies
-                    lm_sensors
-                    curl
-                    material-symbols
-                    nerd-fonts.jetbrains-mono
-                    ibm-plex
-                    fd
-                    python3Packages.pyaudio
-                    python3Packages.numpy
-                    cava
-                    networkmanager
-                    bluez
-                    ddcutil
-                    brightnessctl
-                ]);
+        devShells.${system}.default = mkShell {
+            buildInputs = [quickshell];
+            shellHook = ''
+                export QML2_IMPORT_PATH="${quickshell}/lib/qt-6/qml:$QML2_IMPORT_PATH}"
+            '';
         };
     };
 }
