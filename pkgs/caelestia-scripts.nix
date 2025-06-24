@@ -10,8 +10,8 @@ pkgs.stdenv.mkDerivation {
     src = pkgs.fetchFromGitHub {
         owner = "caelestia-dots";
         repo = "scripts";
-        rev = "main";
-        sha256 = "sha256-agQPRI7mnbIHyW5M+Wr0NJMOLeRe0i5qFrAYsGTDEzI=";
+        rev = "fd8ab97d3abdd415d4ea9875ef2b3a1800150498";
+        sha256 = "sha256-fv4sx7nqaahu8iUHmy4oaxt/2K3d2E+pAH6oXAfjIs0=";
     };
 
     nativeBuildInputs = with pkgs; [
@@ -28,39 +28,51 @@ pkgs.stdenv.mkDerivation {
     ];
 
     patchPhase = ''
-  find . -name "*.fish" -type f | while read -r file; do
-    sed -i 's|$src/../data/schemes|$C_DATA/schemes|g' "$file"
-    sed -i 's|(dirname (status filename))/data|$C_DATA|g' "$file"
-    sed -i 's|$src/data|$C_DATA|g' "$file"
-  done
+        find . -name "*.fish" -type f | while read -r file; do
+            sed -i 's|$src/../data/schemes|$C_DATA/schemes|g' "$file"
+            sed -i 's|(dirname (status filename))/data|$C_DATA|g' "$file"
+            sed -i 's|$src/data|$C_DATA|g' "$file"
+        done
 
-  find . -name "*.py" -type f | while read -r file; do
-    sed -i 's|os.path.expanduser("~/.local/share/caelestia")|os.environ.get("C_DATA", "/default/path")|g' "$file"
-    sed -i 's|Path.home() / ".local" / "share" / "caelestia"|Path(os.environ.get("C_DATA", "/default/path"))|g' "$file"
-  done
-'';
+        find . -name "*.py" -type f | while read -r file; do
+            sed -i 's|os.path.expanduser("~/.local/share/caelestia")|os.environ.get("C_DATA", "/default/path")|g' "$file"
+            sed -i 's|Path.home() / ".local" / "share" / "caelestia"|Path(os.environ.get("C_DATA", "/default/path"))|g' "$file"
+        done
+    '';
 
-installPhase = ''
-  mkdir -p $out/bin
-  mkdir -p $out/share/caelestia-scripts
+    installPhase = ''
+        mkdir -p $out/bin
+        mkdir -p $out/share/caelestia-scripts
 
-  cp -r * $out/share/caelestia-scripts/
+        cp -r * $out/share/caelestia-scripts/
 
-  # Fix Python shebangs here as before...
+        # Fix Python shebangs here as before...
 
-  # Make Python scripts executable as before...
+        # Make Python scripts executable as before...
 
-  # No setup script!
+        # No setup script!
 
-  makeWrapper ${pkgs.fish}/bin/fish $out/bin/caelestia \
-    --set C_DATA $out/share/caelestia-scripts/data \
-    --set C_CONFIG $out/share/caelestia-scripts/shell \
-    --prefix PATH : ${lib.makeBinPath (with pkgs; [
-      imagemagick wl-clipboard fuzzel socat foot jq
-      (python3.withPackages (ps: with ps; [materialyoucolor pillow]))
-      grim wayfreeze wl-screenrec git coreutils findutils gnugrep xdg-user-dirs
-    ])}
-  '';
+        makeWrapper ${pkgs.fish}/bin/fish $out/bin/caelestia \
+          --set C_DATA $out/share/caelestia-scripts/data \
+          --set C_CONFIG $out/share/caelestia-scripts/shell \
+          --prefix PATH : ${lib.makeBinPath (with pkgs; [
+            imagemagick
+            wl-clipboard
+            fuzzel
+            socat
+            foot
+            jq
+            (python3.withPackages (ps: with ps; [materialyoucolor pillow]))
+            grim
+            wayfreeze
+            wl-screenrec
+            git
+            coreutils
+            findutils
+            gnugrep
+            xdg-user-dirs
+        ])}
+    '';
 
     # patchPhase = ''
     #     # Fix hardcoded paths to use XDG directories
