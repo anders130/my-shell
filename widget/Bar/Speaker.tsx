@@ -1,5 +1,6 @@
 import { createState, With } from "ags"
 import { execAsync } from "ags/process"
+import { createPoll } from "ags/time"
 
 const getActiveSinkPort = async () =>
     execAsync("pactl list sinks").then((out) => {
@@ -27,6 +28,8 @@ const icons: Record<string, string> = {
 
 // state outside to apply to all instances
 const [activePort, setActivePort] = createState("unknown")
+const port = createPoll("", 5000, getActiveSinkPort)
+port.subscribe(() => setActivePort(port.get()))
 
 export default function Speaker() {
     const togglePort = async () => {
