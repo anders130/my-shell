@@ -1,39 +1,39 @@
-import { bind } from "astal"
-import { Gtk } from "astal/gtk3"
 import Hyprland from "gi://AstalHyprland"
+import { createBinding, For } from "ags"
 import Clients from "./Clients"
 
-const hyprland = Hyprland.get_default()
-
-interface Props {
+interface WorkspacesProps {
     monitorId: number
 }
 
-export default function Workspaces({ monitorId }: Props) {
-    const workspaces = bind(hyprland, "workspaces").as((ws) =>
+export default function Workspaces({ monitorId }: WorkspacesProps) {
+    const hyprland = Hyprland.get_default()
+    const workspaces = createBinding(hyprland, "workspaces").as((ws) =>
         ws
-            .filter((workspace) => workspace.monitor.id === monitorId)
-            .sort((a, b) => a.id - b.id)
-            .map((workspace) => (
-                <button
-                    halign={Gtk.Align.CENTER}
-                    onClick={() =>
-                        hyprland.dispatch("workspace", workspace.name)
-                    }
-                >
-                    <box orientation={Gtk.Orientation.HORIZONTAL} spacing={4}>
-                        <label>
-                            {workspace.name[workspace.name.length - 1]}
-                        </label>
-                        <Clients workspaceId={workspace.id} />
-                    </box>
-                </button>
-            )),
+            .filter((w) => w.monitor.id === monitorId)
+            .sort((a, b) => a.id - b.id),
     )
 
     return (
-        <box orientation={Gtk.Orientation.HORIZONTAL} halign={Gtk.Align.CENTER}>
-            {workspaces}
+        <box>
+            <For each={workspaces}>
+                {(workspace) => (
+                    <button
+                        onClicked={() =>
+                            hyprland.dispatch("workspace", workspace.name)
+                        }
+                    >
+                        <box spacing={4}>
+                            <label
+                                label={
+                                    workspace.name[workspace.name.length - 1]
+                                }
+                            />
+                            <Clients workspaceId={workspace.id} />
+                        </box>
+                    </button>
+                )}
+            </For>
         </box>
     )
 }

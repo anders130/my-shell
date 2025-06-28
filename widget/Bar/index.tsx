@@ -1,32 +1,35 @@
-import { App, Astal, Gtk, Gdk } from "astal/gtk3"
-import Workspaces from "./Workspaces"
+import app from "ags/gtk4/app"
+import { Astal, Gdk } from "ags/gtk4"
 import Tray from "./Tray"
-import Sound from "./Sound"
+import Speaker from "./Speaker"
 import Clock from "./Clock"
 import Battery from "./Battery"
 import Wifi from "./Wifi"
+import Workspaces from "./Workspaces"
 
 export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
     const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
     return (
         <window
-            className="Bar"
+            visible
+            name="bar"
+            class="Bar"
             gdkmonitor={gdkmonitor}
             exclusivity={Astal.Exclusivity.EXCLUSIVE}
             anchor={TOP | LEFT | RIGHT}
-            application={App}
+            application={app}
         >
-            <centerbox>
-                <box halign={Gtk.Align.START}>
+            <centerbox cssName="centerbox">
+                <box $type="start">
                     <Workspaces monitorId={monitorId} />
                 </box>
-                <box halign={Gtk.Align.CENTER}>
+                <box $type="center">
                     <Clock />
                 </box>
-                <box halign={Gtk.Align.END}>
+                <box $type="end">
                     <Tray />
-                    <Sound />
+                    <Speaker />
                     <Indicators />
                 </box>
             </centerbox>
@@ -35,15 +38,16 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
 }
 
 function Indicators() {
-    const wifi = Wifi()
-    const battery = Battery()
-
-    const isVisible = wifi.visible || battery.visible
-
+    const wifiRendered = Wifi() !== null
+    const batteryRendered = Battery() !== null
     return (
-        <box spacing={10} className="indicators" visible={isVisible}>
-            {wifi}
-            {battery}
+        <box
+            class="indicators"
+            spacing={10}
+            visible={wifiRendered || batteryRendered}
+        >
+            <Wifi />
+            <Battery />
         </box>
     )
 }

@@ -13,35 +13,56 @@
         system = "x86_64-linux";
         pkgs = inputs.nixpkgs.legacyPackages.${system};
         agsPkgs = inputs.ags.packages.${system};
-        deps = [pkgs.pulseaudio];
 
-        packageJson = builtins.toJSON {
-            name = "astal-shell";
-            dependencies.astal = "${agsPkgs.gjs}";
-        };
+        astalPackages = with agsPkgs; [
+            astal4
+            hyprland
+            apps
+            battery
+            network
+            tray
+            powerprofiles
+        ];
+
+        pname = "my-shell";
+        entry = "app.ts";
+        extraPackages =
+            astalPackages
+            ++ (with pkgs; [
+                pulseaudio
+            ]);
     in {
-        packages.${system}.default = inputs.ags.lib.bundle {
-            inherit pkgs;
-            src = ./.;
-            name = "my-shell";
-            entry = "app.ts";
+        packages.${system} = {
+            default = pkgs.stdenv.mkDerivation {
+                name = pname;
+                src = ./.;
 
-            extraPackages =
-                deps
-                ++ (with agsPkgs; [
-                    apps
-                    battery
-                    hyprland
-                    network
-                    tray
-                ]);
+                nativeBuildInputs = with pkgs; [
+                    wrapGAppsHook
+                    gobject-introspection
+                    agsPkgs.default
+                ];
+
+                buildInputs = extraPackages ++ [pkgs.gjs];
+
+                installPhase = ''
+                    runHook preInstall
+
+                    mkdir -p $out/bin
+                    mkdir -p $out/share
+                    cp -r * $out/share
+                    ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
+
+                    runHook postInstall
+                '';
+            };
         };
-
         devShells.${system}.default = pkgs.mkShell {
-            buildInputs = deps ++ [agsPkgs.agsFull];
-            shellHook = ''
-                echo '${packageJson}' | ${pkgs.jq}/bin/jq '.' --indent 4 > package.json
-            '';
+            buildInputs = [
+                (agsPkgs.default.override {
+                    inherit extraPackages;
+                })
+            ];
         };
     };
 }

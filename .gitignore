@@ -1,4 +1,3 @@
-.direnv/
 node_modules/
 @girs/
-package.json
+.direnv/

@@ -1,31 +1,24 @@
-import { bind } from "astal"
-import { Gtk } from "astal/gtk3"
+import { createBinding, For } from "ags"
 import Hyprland from "gi://AstalHyprland"
 import Apps from "gi://AstalApps"
 
-const hyprland = Hyprland.get_default()
-const apps = new Apps.Apps({
-    nameMultiplier: 2,
-    entryMultiplier: 0,
-    executableMultiplier: 2,
-})
-
-interface Props {
+interface ClientsProps {
     workspaceId: number
 }
 
-export default function Clients({ workspaceId }: Props) {
-    const clients = bind(hyprland, "clients").as((cs) =>
+export default function Clients({ workspaceId }: ClientsProps) {
+    const hyprland = Hyprland.get_default()
+    const clients = createBinding(hyprland, "clients").as((cs) =>
         Object.entries(
             cs
-                .filter((client) => client.workspace.id === workspaceId)
+                .filter((c) => c.workspace.id === workspaceId)
                 .reduce(
-                    (acc, client) => {
-                        const key = client.class || client.title
+                    (acc, c) => {
+                        const key = c.class || c.title
                         if (!acc[key]) {
-                            acc[key] = { count: 0, client }
+                            acc[key] = { count: 0, client: c }
                         }
-                        acc[key].count += 1
+                        acc[key].count++
                         return acc
                     },
                     {} as Record<
@@ -33,20 +26,29 @@ export default function Clients({ workspaceId }: Props) {
                         { count: number; client: Hyprland.Client }
                     >,
                 ),
-        ).map(([_, { count, client }]) => (
-            <box orientation={Gtk.Orientation.HORIZONTAL} spacing={2}>
-                <icon icon={getClientIcon(client)} />
-                {count > 1 && <label className="app-count">{count}</label>}
-            </box>
-        )),
+        ),
     )
-
     return (
-        <box orientation={Gtk.Orientation.HORIZONTAL} spacing={4}>
-            {clients}
+        <box>
+            <For each={clients}>
+                {([_, { count, client }]) => (
+                    <box spacing={2}>
+                        <image iconName={getClientIcon(client)} />
+                        {count > 1 && (
+                            <label class="app-count" label={count.toString()} />
+                        )}
+                    </box>
+                )}
+            </For>
         </box>
     )
 }
+
+const apps = new Apps.Apps({
+    nameMultiplier: 2,
+    entryMultiplier: 0,
+    executableMultiplier: 2,
+})
 
 function getClientIcon(client: Hyprland.Client): string | undefined {
     const normalize = (name: string) => name.split(".").pop()?.toLowerCase()
@@ -62,6 +64,6 @@ function getClientIcon(client: Hyprland.Client): string | undefined {
     }
 
     return apps.list.find((app) =>
-        app.name.toLowerCase().includes(normalizedClass),
+        app.entry.toLowerCase().includes(normalizedClass),
     )?.iconName
 }

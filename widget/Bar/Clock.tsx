@@ -1,7 +1,6 @@
-import { Variable } from "astal"
-
-const date = Variable("-").poll(1000, 'date "+%H:%M:%S  -  %e. %b"')
+import { createPoll } from "ags/time"
 
 export default function Clock() {
-    return <label label={date()} />
+    const time = createPoll("", 1000, 'date "+%H:%M:%S  -  %e. %b"')
+    return <label label={time} />
 }
