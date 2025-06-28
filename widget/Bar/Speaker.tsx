@@ -25,16 +25,18 @@ const icons: Record<string, string> = {
     unknown: "audio-volume-muted-symbolic",
 }
 
-export default function Speaker() {
-    const [activePort, setActivePort] = createState("unknown")
-    getActiveSinkPort().then(setActivePort)
+// state outside to apply to all instances
+const [activePort, setActivePort] = createState("unknown")
 
+export default function Speaker() {
     const togglePort = async () => {
         const isHeadphones = activePort.get().includes("headphones")
         await toggleSinkPort(isHeadphones ? speakers : headphones)
         const currentPort = await getActiveSinkPort()
         setActivePort(currentPort)
     }
+
+    getActiveSinkPort().then(setActivePort)
 
     return (
         <With value={activePort}>
