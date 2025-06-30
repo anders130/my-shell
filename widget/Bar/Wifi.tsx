@@ -5,6 +5,7 @@ import Gtk from "gi://Gtk"
 
 export default function Wifi() {
     const network = AstalNetwork.get_default()
+    const wired = createBinding(network, "wired")
     const wifi = createBinding(network, "wifi")
 
     const sorted = (arr: Array<AstalNetwork.AccessPoint>) => {
@@ -24,11 +25,7 @@ export default function Wifi() {
     }
 
     return (
-        <box
-            visible={
-                wifi(Boolean) && !createBinding(network, "wired").as(Boolean)
-            }
-        >
+        <box visible={wifi(Boolean) && wired.as((w) => !w)}>
             <With value={wifi}>
                 {(wifi) =>
                     wifi && (
