@@ -1,3 +1,6 @@
+# ags
 node_modules/
 @girs/
+# nix
 .direnv/
+result
