@@ -44,8 +44,13 @@ export default function Speaker() {
     return (
         <With value={activePort}>
             {(port) => (
-                <button onClicked={togglePort} tooltipText={port}>
+                <button
+                    visible={portToIconKey[port] !== undefined}
+                    onClicked={togglePort}
+                    tooltipText={port}
+                >
                     <image iconName={icons[portToIconKey[port]]} />
+                    <label label={portToIconKey[port]} />
                 </button>
             )}
         </With>
