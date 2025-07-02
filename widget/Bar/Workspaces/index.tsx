@@ -3,14 +3,14 @@ import { createBinding, For } from "ags"
 import Clients from "./Clients"
 
 interface WorkspacesProps {
-    monitorId: number
+    monitorConnector: string
 }
 
-export default function Workspaces({ monitorId }: WorkspacesProps) {
+export default function Workspaces({ monitorConnector }: WorkspacesProps) {
     const hyprland = Hyprland.get_default()
     const workspaces = createBinding(hyprland, "workspaces").as((ws) =>
         ws
-            .filter((w) => w.monitor.id === monitorId)
+            .filter((w) => w.monitor.name === monitorConnector)
             .sort((a, b) => a.id - b.id),
     )
 

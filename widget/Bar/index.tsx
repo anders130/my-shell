@@ -7,7 +7,7 @@ import Battery from "./Battery"
 import Wifi from "./Wifi"
 import Workspaces from "./Workspaces"
 
-export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
+export default function Bar(gdkmonitor: Gdk.Monitor) {
     const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
     return (
@@ -22,7 +22,9 @@ export default function Bar(gdkmonitor: Gdk.Monitor, monitorId: number) {
         >
             <centerbox cssName="centerbox">
                 <box $type="start">
-                    <Workspaces monitorId={monitorId} />
+                    <Workspaces
+                        monitorConnector={gdkmonitor.get_connector()!}
+                    />
                 </box>
                 <box $type="center">
                     <Clock />
