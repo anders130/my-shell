@@ -1,7 +1,11 @@
 import { createPoll } from "ags/time"
+import GLib from "gi://GLib"
 
-const time = createPoll("", 1000, 'date "+%H:%M:%S  -  %e. %b"')
-
-export default function Clock() {
+export default function Clock({ format = "%H:%M:%S  -  %e. %b" }) {
+    const time = createPoll(
+        "",
+        1000,
+        () => GLib.DateTime.new_now_local().format(format)!,
+    )
     return <label label={time} />
 }
