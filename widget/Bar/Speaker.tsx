@@ -50,7 +50,6 @@ export default function Speaker() {
                     tooltipText={port}
                 >
                     <image iconName={icons[portToIconKey[port]]} />
-                    <label label={portToIconKey[port]} />
                 </button>
             )}
         </With>
