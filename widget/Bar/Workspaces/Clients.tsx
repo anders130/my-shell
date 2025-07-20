@@ -1,15 +1,15 @@
-import { createBinding, For } from "ags"
+import { For } from "ags"
 import Hyprland from "gi://AstalHyprland"
 import Apps from "gi://AstalApps"
 import Gtk from "gi://Gtk"
+import useHyprlandClients from "../../../hooks/useHyprlandClients"
 
 interface ClientsProps {
     workspaceId: number
 }
 
 export default function Clients({ workspaceId }: ClientsProps) {
-    const hyprland = Hyprland.get_default()
-    const clients = createBinding(hyprland, "clients").as((cs) =>
+    const clients = useHyprlandClients().as((cs) =>
         Object.entries(
             cs
                 .filter((c) => c.workspace.id === workspaceId)
@@ -29,6 +29,7 @@ export default function Clients({ workspaceId }: ClientsProps) {
                 ),
         ),
     )
+
     return (
         <box>
             <For each={clients}>
@@ -44,7 +45,6 @@ export default function Clients({ workspaceId }: ClientsProps) {
         </box>
     )
 }
-
 const apps = new Apps.Apps({
     nameMultiplier: 2,
     entryMultiplier: 0,
