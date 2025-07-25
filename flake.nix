@@ -3,18 +3,23 @@
 
     inputs = {
         nixpkgs.url = "nixpkgs/nixos-unstable";
+        astal = {
+            url = "github:aylur/astal";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
         ags = {
             url = "github:aylur/ags";
             inputs.nixpkgs.follows = "nixpkgs";
+            inputs.astal.follows = "astal";
         };
     };
 
     outputs = inputs: let
         system = "x86_64-linux";
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        agsPkgs = inputs.ags.packages.${system};
+        ags = inputs.ags.packages.${system}.default;
 
-        astalPackages = with agsPkgs; [
+        astalPackages = with inputs.astal.packages.${system}; [
             astal4
             hyprland
             apps
@@ -24,43 +29,47 @@
             powerprofiles
         ];
 
-        pname = "my-shell";
-        entry = "app.ts";
-        extraPackages =
-            astalPackages
-            ++ (with pkgs; [
-                pulseaudio
-            ]);
-    in {
-        packages.${system} = {
-            default = pkgs.stdenv.mkDerivation {
-                name = pname;
-                src = ./.;
+        runtimePackages = [pkgs.pulseaudio];
 
-                nativeBuildInputs = with pkgs; [
-                    wrapGAppsHook
-                    gobject-introspection
-                    agsPkgs.default
+        name = "my-shell";
+        entry = "app.ts";
+    in {
+        packages.${system}.default = pkgs.stdenv.mkDerivation {
+            inherit name;
+            src = ./.;
+
+            nativeBuildInputs = with pkgs; [
+                wrapGAppsHook
+                gobject-introspection
+                ags
+            ];
+
+            buildInputs =
+                astalPackages
+                ++ [
+                    pkgs.gjs
+                    pkgs.glib
                 ];
 
-                buildInputs = extraPackages ++ [pkgs.gjs];
+            installPhase = ''
+                runHook preInstall
 
-                installPhase = ''
-                    runHook preInstall
+                mkdir -p $out/bin
+                mkdir -p $out/share
+                cp -r * $out/share
+                ags bundle ${entry} $out/bin/${name} -d "SRC='$out/share'"
 
-                    mkdir -p $out/bin
-                    mkdir -p $out/share
-                    cp -r * $out/share
-                    ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
+                runHook postInstall
+            '';
 
-                    runHook postInstall
-                '';
-            };
+            preFixup = ''
+                gappsWrapperArgs+=(--prefix PATH : ${pkgs.lib.makeBinPath runtimePackages})
+            '';
         };
         devShells.${system}.default = pkgs.mkShell {
             buildInputs = [
-                (agsPkgs.default.override {
-                    inherit extraPackages;
+                (ags.override {
+                    extraPackages = astalPackages ++ runtimePackages;
                 })
             ];
         };
